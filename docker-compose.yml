@@ -8,21 +8,21 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - /var/lib/mysql
-      - /etc/nginx/conf.d
-      - /etc/httpd/conf.d
-      - /etc/kusanagi.d
-      - /home/kusanagi
+      - ./db:/var/lib/mysql
+      - ./nginx:/etc/nginx/conf.d
+      - ./kusanagi.d:/etc/kusanagi.d
+      - ./home:/home/kusanagi
     command: /bin/sh
   
   kusanagi-nginx:
     container_name: kusanagi-nginx
     image: primestrategy/kusanagi-nginx:1.10.0-1
+    restart: always
     environment:
       PROFILE: kusanagi
       FQDN: kusanagi.example.jp
       WPLANG: ja
-      BCACHE: "off"
+      BCACHE: "on"
       FCACHE: "off"
     volumes_from:
       - kusanagi-data
@@ -34,7 +34,8 @@ services:
   
   kusanagi-mariadb:
     container_name: kusanagi-mariadb
-    image: mariadb:10.0.24
+    image: mariadb:10.2.14
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: my-secret-pw
       MYSQL_USER:     user
@@ -45,15 +46,8 @@ services:
   
   kusanagi-php7:
     container_name: kusanagi-php7
-    image: primestrategy/kusanagi-php7:7.0.6-1
-    links:
-      - kusanagi-mariadb:mysql
-    volumes_from:
-      - kusanagi-data
-
-  kusanagi-php5:
-    container_name: kusanagi-php5
-    image: primestrategy/kusanagi-php5:5.6.20-1
+    image: riku6460/kusanagi-php7:7.2.4
+    restart: always
     links:
       - kusanagi-mariadb:mysql
     volumes_from:

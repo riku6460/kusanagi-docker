@@ -46,7 +46,7 @@ services:
   
   kusanagi-php7:
     container_name: kusanagi-php7
-    image: riku6460/kusanagi-php7:7.2.5
+    image: riku6460/kusanagi-php7:7.2.8
     restart: always
     links:
       - kusanagi-mariadb:mysql
